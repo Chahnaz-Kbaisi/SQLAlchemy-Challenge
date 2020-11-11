@@ -93,6 +93,31 @@ def station():
 
     return jsonify(station_dict)
 
+# Tobs route
+
+
+@app.route("/api/v1.0/tobs")
+def tobs():
+    """
+        Return temperature observation of the most
+        active station for the last year
+    """
+    session = Session(engine)
+    results = session.query(Measurement.date, Measurement.tobs)\
+        .filter(Measurement.station == 'USC00519281')\
+        .filter(Measurement.date.between('2016-08-23', '2017-08-23'))\
+        .order_by(Measurement.date).all()
+    session.close()
+
+    temp_data = []
+    for date, tobs in results:
+        tobs_dict = {}
+        tobs_dict["Date"] = date
+        tobs_dict["Temperature"] = tobs
+        temp_data.append(tobs_dict)
+
+    return jsonify(temp_data)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
