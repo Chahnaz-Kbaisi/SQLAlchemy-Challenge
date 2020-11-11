@@ -1,3 +1,4 @@
+# Generating the Flask Application for Climate App
 # Dependencies
 from flask import Flask, jsonify
 import datetime as dt
