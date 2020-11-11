@@ -144,6 +144,33 @@ def start(start):
 
     return jsonify(start_tobs_data)
 
+# End Date route:
+
+
+@app.route("/api/v1.0/start=<start>/end=<end>")
+def start_end(start, end):
+    """
+        start (string): A date string in the format %Y-%m-%d
+        end (string): A date string in the format %Y-%m-%d
+        Return a list of TMIN, TMAX, & TAVG for all dates between start & end date.
+    """
+    session = Session(engine)
+    start = dt.datetime.strptime(start, '%Y-%m-%d')
+    end = dt.datetime.strptime(end, '%Y-%m-%d')
+    results = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
+        .filter(Measurement.date.between(start, end)).all()
+    session.close()
+
+    start_to_end = []
+    for min, max, avg in results:
+        tobs_dict = {}
+        tobs_dict["Min"] = min
+        tobs_dict["Max"] = max
+        tobs_dict["Avg"] = avg
+        start_to_end.append(tobs_dict)
+
+    return jsonify(start_to_end)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
