@@ -34,7 +34,7 @@ app = Flask(__name__)
 def home():
     return """
         Available routes:<br/>
-        /api/v1.0/percipitation<br/>
+        /api/v1.0/precipitation<br/>
         /api/v1.0/stations<br/>
         /api/v1.0/tobs<br/>
         /api/v1.0/start=YYYY-MM-DD<br/>
@@ -44,7 +44,7 @@ def home():
 # Precipitation route
 
 
-@app.route("/api/v1.0/percipitation")
+@app.route("/api/v1.0/precipitation")
 def percipitation():
     """
         Return a dictionary using date as the key & prcp as the value
@@ -72,7 +72,7 @@ def percipitation():
     for date, prcp in results:
         prcp_dict = {}
         prcp_dict["Date"] = date
-        prcp_dict["Percipitation"] = prcp
+        prcp_dict["Precipitation"] = prcp
         precipitation_data.append(prcp_dict)
 
     return jsonify(precipitation_data)
@@ -92,6 +92,7 @@ def station():
     station_dict = list(np.ravel(results))
 
     return jsonify(station_dict)
+
 
 # Tobs route
 
@@ -117,6 +118,31 @@ def tobs():
         temp_data.append(tobs_dict)
 
     return jsonify(temp_data)
+
+# Start Date route:
+
+
+@app.route("/api/v1.0/start=<start>")
+def start(start):
+    """
+        start (string): A date string in the format %Y-%m-%d
+        Return a list of TMIN, TMAX, & TAVG for all dates >= to start date.
+    """
+    session = Session(engine)
+    start_date = dt.datetime.strptime(start, '%Y-%m-%d')
+    results = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))\
+        .filter(Measurement.date >= start_date).all()
+    session.close()
+
+    start_tobs_data = []
+    for min, max, avg in results:
+        tobs_dict = {}
+        tobs_dict["Min"] = min
+        tobs_dict["Max"] = max
+        tobs_dict["Avg"] = avg
+        start_tobs_data.append(tobs_dict)
+
+    return jsonify(start_tobs_data)
 
 
 if __name__ == '__main__':
