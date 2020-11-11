@@ -40,3 +40,59 @@ def home():
         /api/v1.0/start=YYYY-MM-DD<br/>
         /api/v1.0/start=YYYY-MM-DD/end=YYYY-MM-DD;
     """
+
+# Precipitation route
+
+
+@app.route("/api/v1.0/percipitation")
+def percipitation():
+    """
+        Return a dictionary using date as the key & prcp as the value
+    """
+    # Create session link from python to DB
+    session = Session(engine)
+
+    # Query results for dates & prcp
+    latest_date = session.query(Measurement.date)\
+        .order_by(Measurement.date.desc())\
+        .first()
+    end_date = dt.datetime(2017, 8, 23)
+    target_date = dt.date(2017, 8, 23)
+    delta = dt.timedelta(days=365)
+    query_date = target_date - delta
+
+    results = session.query(Measurement.date, Measurement.prcp)\
+        .filter(Measurement.date >= query_date)\
+        .filter(Measurement.date <= end_date)\
+        .all()
+
+    session.close()
+
+    precipitation_data = []
+    for date, prcp in results:
+        prcp_dict = {}
+        prcp_dict["Date"] = date
+        prcp_dict["Percipitation"] = prcp
+        precipitation_data.append(prcp_dict)
+
+    return jsonify(precipitation_data)
+
+# Stations route
+
+
+@app.route("/api/v1.0/stations")
+def station():
+    """
+        Return a list of all stations from database.
+    """
+    session = Session(engine)
+    results = session.query(Station.name).all()
+    session.close()
+
+    station_dict = list(np.ravel(results))
+
+    return jsonify(station_dict)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
