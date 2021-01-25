@@ -88,26 +88,26 @@ After the initial analysis, a Flask API was designed based on the queries develo
 
 1. Temperature Analysis I
 
-  * The average temperature was identified in June at all stations across all available years in the dataset.
+   * The average temperature was identified in June at all stations across all available years in the dataset.
 
-  * The t-test was used to determine whether the difference in the means, if any, was statistically significant. 
+   * The t-test was used to determine whether the difference in the means, if any, was statistically significant. 
 
 2. Temperature Analysis II
 
-  * The `calc_temps` function was used to calculate the min, avg, and max temperatures for the trip using the matching dates from the previous year (i.e., use "2017-01-01" if your trip start date was "2018-01-01").
+   * The `calc_temps` function was used to calculate the min, avg, and max temperatures for the trip using the matching dates from the previous year (i.e., use "2017-01-01" if your trip start date was "2018-01-01").
 
-  * The min, avg, and max temperature were plotted from the previous query as a bar chart.
+   * The min, avg, and max temperature were plotted from the previous query as a bar chart.
 
-  * The average temperature was used as the bar height.
+   * The average temperature was used as the bar height.
     
 3. Daily Rainfall Average
 
-  * The rainfall per weather station was calculated using the previous year's matching dates.
+   * The rainfall per weather station was calculated using the previous year's matching dates.
 
-  * The daily normals were calculated. Normals are the averages for the min, avg, and max temperatures.
+   * The daily normals were calculated. Normals are the averages for the min, avg, and max temperatures.
 
-  * The function called `daily_normals` was used to calculate the daily normals for a specific date. 
+   * The function called `daily_normals` was used to calculate the daily normals for a specific date. 
 
-  * A list of dates was created for the trip in the format `%m-%d`. The `daily_normals` function was used to calculate the normals for each date string and append the results to a list.
+   * A list of dates was created for the trip in the format `%m-%d`. The `daily_normals` function was used to calculate the normals for each date string and append the results to a list.
 
-  * The list of daily normals was loaded into a Pandas DataFrame and the index was set equal to the date.
+   * The list of daily normals was loaded into a Pandas DataFrame and the index was set equal to the date.
